@@ -21,7 +21,7 @@ weights/*.engine
 weights/*.tflite
 
 # evaluation tools folder
-val_utils/
+# val_utils/
 
 # zip files
 *.zip
@@ -48,3 +48,5 @@ dist/
 
 # cmc debug images
 boxmot/motion/cmc/*.jpg
+
+.idea
