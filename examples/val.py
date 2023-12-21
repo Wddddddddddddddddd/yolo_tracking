@@ -64,14 +64,6 @@ class Evaluator:
         except git.exc.GitError as err:
             LOGGER.info(f'Eval repo already downloaded {err}')
 
-        # fix deprecated np.float, np.int & np.bool
-        cmd_float = f"grep -rl np.float {val_tools_path} | xargs sed -i 's/np.float/float/g'"
-        subprocess.run(cmd_float, shell=True)
-        cmd_int = f"grep -rl np.int {val_tools_path} | xargs sed -i 's/np.int/int/g'"
-        subprocess.run(cmd_int, shell=True)
-        cmd_bool = f"grep -rl np.bool {val_tools_path} | xargs sed -i 's/np.bool/bool/g'"
-        subprocess.run(cmd_bool, shell=True)
-
     def download_mot_dataset(self, val_tools_path, benchmark):
         """Download specific MOT dataset and unpack it
         Args:
@@ -336,8 +328,8 @@ def parse_opt():
                         help='strongsort, ocsort')
     parser.add_argument('--name', default='exp',
                         help='save results to project/name')
-    parser.add_argument('--classes', nargs='+', type=str, default=['0'],
-                        help='filter by class: --classes 0, or --classes 0 2 3')
+    parser.add_argument('--classes', nargs='+', type=str, default=['0','1','2','3'],
+                        help='filter by class: --classes 0, or --classes 0 2 3') # 需要识别的类别
     parser.add_argument('--project', default=ROOT / 'runs' / 'val',
                         help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true',

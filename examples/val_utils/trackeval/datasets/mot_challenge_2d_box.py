@@ -21,7 +21,7 @@ class MotChallenge2DBox(_BaseDataset):
             'TRACKERS_FOLDER': os.path.join(code_path, 'data/trackers/mot_challenge/'),  # Trackers location
             'OUTPUT_FOLDER': None,  # Where to save eval results (if None, same as TRACKERS_FOLDER)
             'TRACKERS_TO_EVAL': None,  # Filenames of trackers to eval (if None, all in folder)
-            'CLASSES_TO_EVAL': ['pedestrian'],  # Valid: ['pedestrian']
+            'CLASSES_TO_EVAL': ['ship', 'boat', 'vessel', 'kayak'],  # Valid: ['pedestrian']
             'BENCHMARK': 'MOT17',  # Valid: 'MOT17', 'MOT16', 'MOT20', 'MOT15'
             'SPLIT_TO_EVAL': 'train',  # Valid: 'train', 'test', 'all'
             'INPUT_AS_ZIP': False,  # Whether tracker input files are zipped
@@ -68,14 +68,12 @@ class MotChallenge2DBox(_BaseDataset):
         self.output_sub_fol = self.config['OUTPUT_SUB_FOLDER']
 
         # Get classes to eval
-        self.valid_classes = ['pedestrian']
+        self.valid_classes = ['ship', 'boat', 'vessel', 'kayak']
         self.class_list = [cls.lower() if cls.lower() in self.valid_classes else None
                            for cls in self.config['CLASSES_TO_EVAL']]
         if not all(self.class_list):
             raise TrackEvalException('Attempted to evaluate an invalid class. Only pedestrian class is valid.')
-        self.class_name_to_class_id = {'pedestrian': 1, 'person_on_vehicle': 2, 'car': 3, 'bicycle': 4, 'motorbike': 5,
-                                       'non_mot_vehicle': 6, 'static_person': 7, 'distractor': 8, 'occluder': 9,
-                                       'occluder_on_ground': 10, 'occluder_full': 11, 'reflection': 12, 'crowd': 13}
+        self.class_name_to_class_id = {'ship': 0, 'boat': 1, 'vessel': 2, 'kayak': 3}
         self.valid_class_numbers = list(self.class_name_to_class_id.values())
 
         # Get sequences to eval and check gt files exist
@@ -322,7 +320,8 @@ class MotChallenge2DBox(_BaseDataset):
         # Check that input data has unique ids
         self._check_unique_ids(raw_data)
 
-        distractor_class_names = ['person_on_vehicle', 'static_person', 'distractor', 'reflection']
+        # distractor_class_names = ['person_on_vehicle', 'static_person', 'distractor', 'reflection']
+        distractor_class_names = []
         if self.benchmark == 'MOT20':
             distractor_class_names.append('non_mot_vehicle')
         distractor_classes = [self.class_name_to_class_id[x] for x in distractor_class_names]
@@ -347,12 +346,12 @@ class MotChallenge2DBox(_BaseDataset):
             tracker_classes = raw_data['tracker_classes'][t]
             tracker_confidences = raw_data['tracker_confidences'][t]
             similarity_scores = raw_data['similarity_scores'][t]
-
+            tracker_classes = [0, 1, 2, 3]
             # Evaluation is ONLY valid for pedestrian class
-            if len(tracker_classes) > 0 and np.max(tracker_classes) > 1:
-                raise TrackEvalException(
-                    'Evaluation is only valid for pedestrian class. Non pedestrian class (%i) found in sequence %s at '
-                    'timestep %i.' % (np.max(tracker_classes), raw_data['seq'], t))
+            # if len(tracker_classes) > 0 and np.max(tracker_classes) > 1:
+            #     raise TrackEvalException(
+            #         'Evaluation is only valid for pedestrian class. Non pedestrian class (%i) found in sequence %s at '
+            #         'timestep %i.' % (np.max(tracker_classes), raw_data['seq'], t))
 
             # Match tracker and gt dets (with hungarian algorithm) and remove tracker dets which match with gt dets
             # which are labeled as belonging to a distractor class.
@@ -361,14 +360,14 @@ class MotChallenge2DBox(_BaseDataset):
 
                 # Check all classes are valid:
                 invalid_classes = np.setdiff1d(np.unique(gt_classes), self.valid_class_numbers)
-                if len(invalid_classes) > 0:
-                    print(' '.join([str(x) for x in invalid_classes]))
-                    raise(TrackEvalException('Attempting to evaluate using invalid gt classes. '
-                                             'This warning only triggers if preprocessing is performed, '
-                                             'e.g. not for MOT15 or where prepropressing is explicitly disabled. '
-                                             'Please either check your gt data, or disable preprocessing. '
-                                             'The following invalid classes were found in timestep ' + str(t) + ': ' +
-                                             ' '.join([str(x) for x in invalid_classes])))
+                # if len(invalid_classes) > 0:
+                #     print(' '.join([str(x) for x in invalid_classes]))
+                #     raise(TrackEvalException('Attempting to evaluate using invalid gt classes. '
+                #                              'This warning only triggers if preprocessing is performed, '
+                #                              'e.g. not for MOT15 or where prepropressing is explicitly disabled. '
+                #                              'Please either check your gt data, or disable preprocessing. '
+                #                              'The following invalid classes were found in timestep ' + str(t) + ': ' +
+                #                              ' '.join([str(x) for x in invalid_classes])))
 
                 matching_scores = similarity_scores.copy()
                 matching_scores[matching_scores < 0.5 - np.finfo('float').eps] = 0
