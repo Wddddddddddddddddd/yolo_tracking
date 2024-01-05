@@ -37,3 +37,5 @@ yacs>=0.1.8             # clip
 # plotly                # hyper param importance and pareto front plots
 # kaleido
 # joblib
+
+ultralytics==8.0.145

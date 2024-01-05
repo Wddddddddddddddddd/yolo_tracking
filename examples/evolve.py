@@ -269,7 +269,7 @@ def parse_opt():
                         help='save results to project/name')
     parser.add_argument('--project', default=EXAMPLES / 'runs' / 'evolve',
                         help='save results to project/name')
-    parser.add_argument('--classes', nargs='+', type=str, default=['0'],
+    parser.add_argument('--classes', nargs='+', type=str, default=['0', '1', '2', '3'],
                         help='filter by class: --classes 0, or --classes 0 2 3')
     parser.add_argument('--exist-ok', action='store_true',
                         help='existing project/name ok, do not increment')
@@ -285,7 +285,7 @@ def parse_opt():
                         help='inference size h,w')
     parser.add_argument('--gsi', action='store_true',
                         help='apply gsi to results')
-    parser.add_argument('--device', default='',
+    parser.add_argument('--device', default='0',
                         help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--n-trials', type=int, default=10,
                         help='nr of trials for evolution')
