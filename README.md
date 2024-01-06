@@ -97,6 +97,8 @@ If you want to run the YOLOv8, YOLO-NAS or YOLOX examples:
 ```
 git clone https://github.com/mikel-brostrom/yolo_tracking.git
 cd yolo_tracking
+conda create -n yolo_tracking python=3.8
+conda activate yolo_tracking
 pip install -v -e .
 ```
 

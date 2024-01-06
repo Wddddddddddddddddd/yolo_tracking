@@ -38,4 +38,7 @@ yacs>=0.1.8             # clip
 # kaleido
 # joblib
 
-ultralytics==8.0.145
+pillow==7.1.2
+requests==2.23.0
+#boxmot==10.0.47
+#ultralytics==8.0.224
