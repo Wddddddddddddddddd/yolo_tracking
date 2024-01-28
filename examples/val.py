@@ -328,7 +328,7 @@ def parse_opt():
                         help='strongsort, ocsort')
     parser.add_argument('--name', default='exp',
                         help='save results to project/name')
-    parser.add_argument('--classes', nargs='+', type=str, default=['0','1','2','3'],
+    parser.add_argument('--classes', nargs='+', type=str, default=['0','1','2'],
                         help='filter by class: --classes 0, or --classes 0 2 3') # 需要识别的类别
     parser.add_argument('--project', default=ROOT / 'runs' / 'val',
                         help='save results to project/name')
@@ -338,7 +338,7 @@ def parse_opt():
                         help='apply gsi to results')
     parser.add_argument('--benchmark', type=str, default='MOT17-mini',
                         help='MOT16, MOT17, MOT20')
-    parser.add_argument('--split', type=str, default='train',
+    parser.add_argument('--split', type=str, default='test',
                         help='existing project/name ok, do not increment')
     parser.add_argument('--eval-existing', action='store_true',
                         help='evaluate existing results under project/name/mot')
@@ -346,11 +346,11 @@ def parse_opt():
                         help='confidence threshold')
     parser.add_argument('--imgsz', '--img-size', nargs='+', type=int, default=[1280],
                         help='inference size h,w')
-    parser.add_argument('--device', default='',
+    parser.add_argument('--device', default='1',
                         help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--save', action='store_true',
                         help='save video tracking results')
-    parser.add_argument('--processes-per-device', type=int, default=2,
+    parser.add_argument('--processes-per-device', type=int, default=12,
                         help='how many subprocesses can be invoked per GPU (to manage memory consumption)')
     opt = parser.parse_args()
     device = []

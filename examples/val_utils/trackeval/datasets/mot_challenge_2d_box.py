@@ -21,9 +21,9 @@ class MotChallenge2DBox(_BaseDataset):
             'TRACKERS_FOLDER': os.path.join(code_path, 'data/trackers/mot_challenge/'),  # Trackers location
             'OUTPUT_FOLDER': None,  # Where to save eval results (if None, same as TRACKERS_FOLDER)
             'TRACKERS_TO_EVAL': None,  # Filenames of trackers to eval (if None, all in folder)
-            'CLASSES_TO_EVAL': ['ship', 'boat', 'vessel', 'kayak'],  # Valid: ['pedestrian']
+            'CLASSES_TO_EVAL': ['ship', 'boat', 'vessel'],  # Valid: ['pedestrian']
             'BENCHMARK': 'MOT17',  # Valid: 'MOT17', 'MOT16', 'MOT20', 'MOT15'
-            'SPLIT_TO_EVAL': 'train',  # Valid: 'train', 'test', 'all'
+            'SPLIT_TO_EVAL': 'test',  # Valid: 'train', 'test', 'all'
             'INPUT_AS_ZIP': False,  # Whether tracker input files are zipped
             'PRINT_CONFIG': True,  # Whether to print current config
             'DO_PREPROC': True,  # Whether to perform preprocessing (never done for MOT15)
@@ -68,12 +68,12 @@ class MotChallenge2DBox(_BaseDataset):
         self.output_sub_fol = self.config['OUTPUT_SUB_FOLDER']
 
         # Get classes to eval
-        self.valid_classes = ['ship', 'boat', 'vessel', 'kayak']
+        self.valid_classes = ['ship', 'boat', 'vessel']
         self.class_list = [cls.lower() if cls.lower() in self.valid_classes else None
                            for cls in self.config['CLASSES_TO_EVAL']]
         if not all(self.class_list):
             raise TrackEvalException('Attempted to evaluate an invalid class. Only pedestrian class is valid.')
-        self.class_name_to_class_id = {'ship': 0, 'boat': 1, 'vessel': 2, 'kayak': 3}
+        self.class_name_to_class_id = {'ship': 0, 'boat': 1, 'vessel': 2}
         self.valid_class_numbers = list(self.class_name_to_class_id.values())
 
         # Get sequences to eval and check gt files exist
@@ -346,7 +346,7 @@ class MotChallenge2DBox(_BaseDataset):
             tracker_classes = raw_data['tracker_classes'][t]
             tracker_confidences = raw_data['tracker_confidences'][t]
             similarity_scores = raw_data['similarity_scores'][t]
-            tracker_classes = [0, 1, 2, 3]
+            tracker_classes = [0, 1, 2]
             # Evaluation is ONLY valid for pedestrian class
             # if len(tracker_classes) > 0 and np.max(tracker_classes) > 1:
             #     raise TrackEvalException(
