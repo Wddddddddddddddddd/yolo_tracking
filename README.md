@@ -1,3 +1,52 @@
+# Usage for USVTrack
+
+## Installation
+
+
+```
+git clone https://github.com/yaoshanliang/yolo_tracking.git
+cd yolo_tracking
+conda create -n yolo_tracking python=3.8
+conda activate yolo_tracking
+pip install -v -e .
+pip install boxmot
+```
+
+**Trackers**:
+* bytetrack
+* botsort
+* strongsort
+* ocsort
+* deepocsort
+* hybridsort
+
+**reid-model**:
+* osnet_x0_25_market1501.pt
+* mobilenetv2_x1_4_msmt17.engine
+* resnet50_msmt17.onnx
+* osnet_x1_0_msmt17.pt
+* clip_market1501.pt
+* clip_vehicleid.pt
+
+### Evaluation
+```
+CUDA_VISIBLE_DEVICES=0 python examples/val.py --yolo-model /home/shanliang/workspace/code/yolov8/runs/USVTrack/YOLOv8n46/weights/best.pt --benchmark /home/shanliang/workspace/dataset/USVTrack/Tracking/ --split test --tracking-method hybridsort
+```
+
+### Visulize tracking results
+```
+CUDA_VISIBLE_DEVICES=0 python examples/val.py --yolo-model /home/shanliang/workspace/code/yolov8/runs/USVTrack/YOLOv8n46/weights/best.pt --benchmark /home/shanliang/workspace/dataset/USVTrack/Tracking/ --split demo --tracking-method hybridsort --save
+```
+
+### Evolution
+```
+$ python examples/evolve.py --tracking-method strongsort --benchmark /home/shanliang/workspace/dataset/USVTrack/Tracking/ --split test --n-trials 100  # tune strongsort for USVTrack
+                            --tracking-method ocsort     --benchmark <your-custom-dataset> --objective HOTA # tune ocsort for maximizing HOTA on your custom tracking dataset
+```
+
+
+
+---
 # BoxMOT: pluggable SOTA tracking modules for segmentation, object detection and pose estimation models
 
 <div align="center">
