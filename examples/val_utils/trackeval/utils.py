@@ -104,6 +104,13 @@ def write_summary_results(summaries, cls, output_folder):
         writer.writerow(fields)
         writer.writerow(values)
 
+    out_file = os.path.join(output_folder, cls + '_summary.csv')
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)
+    with open(out_file, 'w', newline='') as f:
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow(fields)
+        writer.writerow(values)
+
 
 def write_detailed_results(details, cls, output_folder):
     """Write detailed results to file"""

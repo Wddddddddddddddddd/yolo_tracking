@@ -326,7 +326,7 @@ def parse_opt():
     parser.add_argument('--reid-model', type=str, default=WEIGHTS / 'osnet_x0_25_msmt17.pt')
     parser.add_argument('--tracking-method', type=str, default='deepocsort',
                         help='strongsort, ocsort')
-    parser.add_argument('--name', default='exp',
+    parser.add_argument('--name', default='USVTrack',
                         help='save results to project/name')
     parser.add_argument('--classes', nargs='+', type=str, default=['0','1','2'],
                         help='filter by class: --classes 0, or --classes 0 2 3') # 需要识别的类别
@@ -348,7 +348,7 @@ def parse_opt():
                         help='inference size h,w')
     parser.add_argument('--device', default='1',
                         help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
-    parser.add_argument('--save', action='store_true',
+    parser.add_argument('--save', action='store_true'.
                         help='save video tracking results')
     parser.add_argument('--processes-per-device', type=int, default=12,
                         help='how many subprocesses can be invoked per GPU (to manage memory consumption)')

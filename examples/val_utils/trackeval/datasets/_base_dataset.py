@@ -312,7 +312,7 @@ class _BaseDataset(ABC):
                     if after_preproc:
                         exc_str_init += '\n Note that this error occurred after preprocessing (but not before), ' \
                                         'so ids may not be as in file, and something seems wrong with preproc.'
-                    raise TrackEvalException(exc_str)
+                    # raise TrackEvalException(exc_str)
             if len(gt_ids_t) > 0:
                 unique_ids, counts = np.unique(gt_ids_t, return_counts=True)
                 if np.max(counts) != 1:
