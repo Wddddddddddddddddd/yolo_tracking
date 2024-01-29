@@ -56,8 +56,9 @@ def test_deepocsort_output():
         reid_weights=WEIGHTS / 'mobilenetv2_x1_4_dukemtmcreid.pt',
         device='cpu',
         half=False,
-        per_class=False
+        per_class=False,
     )
+    tracker.asso_func="centroid"
     rgb = np.random.randint(255, size=(640, 640, 3), dtype=np.uint8)
     det = np.array([[144, 212, 578, 480, 0.82, 0],
                     [425, 281, 576, 472, 0.56, 65]])
