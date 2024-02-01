@@ -1,9 +1,9 @@
-asso_func: giou
-conf_thres: 0.5122620708221085
-delta_t: 3
-det_thresh: 0
-inertia: 0.2
-iou_thresh: 0.3
-max_age: 30
-min_hits: 1
-use_byte: false
+asso_func: giou                   # 关联方法
+conf_thres: 0.5122620708221085    # 
+delta_t: 3                        # 时间步长，默认为3
+det_thresh: 0                     # 检测框的置信度阈值
+inertia: 0.2                      # 跟踪器的惯性权重，默认为0.2
+iou_thresh: 0.3                   # 检测框和轨迹之间IOU的最小阈值，默认为0.3
+max_age: 100                      # 允许的跟踪器未更新的最大帧数，默认为30
+min_hits: 1                       # 跟踪器更新所需的最小帧数
+use_byte: false                   # 是否使用字节级别的特征，默认为False
