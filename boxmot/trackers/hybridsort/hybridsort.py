@@ -430,14 +430,15 @@ class HybridSORT(object):
         """
             First round of association
         """
+        # [hgx0523] add the condition for the first frame
         if self.EG_weight_high_score > 0 and self.TCM_first_step:
-            track_features = np.asarray([track.smooth_feat for track in self.trackers],
-                                        dtype=np.float64)
-            emb_dists = embedding_distance(track_features, id_feature_keep).T
-            if self.with_longterm_reid or self.with_longterm_reid_correction:
-                long_track_features = np.asarray([np.vstack(list(track.features)).mean(0) for track in self.trackers],
+            track_features = np.asarray([track.smooth_feat for track in self.trackers], # [hgx0418] get reid feature
+                                        dtype=np.float64)   # [hgx0418] get reid feature
+            emb_dists = embedding_distance(track_features, id_feature_keep).T   # [hgx0418] get reid feature
+            if self.with_longterm_reid or self.with_longterm_reid_correction:   # [hgx0418] get reid feature
+                long_track_features = np.asarray([np.vstack(list(track.features)).mean(0) for track in self.trackers],  # [hgx0418] get reid feature
                                                  dtype=np.float64)
-                assert track_features.shape == long_track_features.shape
+                assert track_features.shape == long_track_features.shape    # [hgx0418] get reid feature
                 long_emb_dists = embedding_distance(long_track_features, id_feature_keep).T
                 assert emb_dists.shape == long_emb_dists.shape
                 matched, unmatched_dets, unmatched_trks = associate_4_points_with_score_with_reid(

@@ -178,9 +178,9 @@ def parse_opt():
                         help='use FP16 half-precision inference')
     parser.add_argument('--vid-stride', type=int, default=1,
                         help='video frame-rate stride')
-    parser.add_argument('--show-labels', default=True, action='store_false',
+    parser.add_argument('--show-labels', default=False, action='store_false',
                         help='either show all or only bboxes')
-    parser.add_argument('--show-conf', default=True, action='store_false',
+    parser.add_argument('--show-conf', default=False, action='store_false',
                         help='hide confidences when show')
     parser.add_argument('--save-txt', default=False, action='store_true',
                         help='save tracking results in a txt file')
