@@ -439,8 +439,8 @@ class DeepOCSort(object):
             velocities,
             k_observations,
             self.inertia,
-            img.shape[1], # w
-            img.shape[0], # h
+            img.shape[1],   # w
+            img.shape[0],   # h
             stage1_emb_cost,
             self.w_association_emb,
             self.aw_off,

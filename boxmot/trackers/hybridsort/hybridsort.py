@@ -4,7 +4,7 @@
     This script is adopted from the SORT script by Alex Bewley alex@bewley.ai
 """
 
-from collections import deque  # [hgx0418] deque for reid feature
+from collections import deque  # deque for reid feature
 
 import numpy as np
 
@@ -429,16 +429,20 @@ class HybridSORT(object):
 
         """
             First round of association
+            
+            the first association stage for high-
+            confidence objects
+            
         """
-        # [hgx0523] add the condition for the first frame
+        # add the condition for the first frame
         if self.EG_weight_high_score > 0 and self.TCM_first_step:
-            track_features = np.asarray([track.smooth_feat for track in self.trackers], # [hgx0418] get reid feature
-                                        dtype=np.float64)   # [hgx0418] get reid feature
-            emb_dists = embedding_distance(track_features, id_feature_keep).T   # [hgx0418] get reid feature
-            if self.with_longterm_reid or self.with_longterm_reid_correction:   # [hgx0418] get reid feature
-                long_track_features = np.asarray([np.vstack(list(track.features)).mean(0) for track in self.trackers],  # [hgx0418] get reid feature
+            track_features = np.asarray([track.smooth_feat for track in self.trackers],
+                                        dtype=np.float64)
+            emb_dists = embedding_distance(track_features, id_feature_keep).T
+            if self.with_longterm_reid or self.with_longterm_reid_correction:
+                long_track_features = np.asarray([np.vstack(list(track.features)).mean(0) for track in self.trackers],
                                                  dtype=np.float64)
-                assert track_features.shape == long_track_features.shape    # [hgx0418] get reid feature
+                assert track_features.shape == long_track_features.shape
                 long_emb_dists = embedding_distance(long_track_features, id_feature_keep).T
                 assert emb_dists.shape == long_emb_dists.shape
                 matched, unmatched_dets, unmatched_trks = associate_4_points_with_score_with_reid(
@@ -459,13 +463,19 @@ class HybridSORT(object):
             matched, unmatched_dets, unmatched_trks = associate_4_points_with_score(
                 dets, trks, self.iou_threshold, velocities_lt, velocities_rt, velocities_lb, velocities_rb,
                 k_observations, self.inertia, self.TCM_first_step_weight, self.asso_func)
-
+        print(matched)
         # update with id feature
         for m in matched:
             self.trackers[m[1]].update(dets[m[0], :], dets0[m[0], 5], dets0[m[0], 6], id_feature_keep[m[0], :])
 
+        # print(self.trackers)
         """
             Second round of associaton by OCR
+            
+            the second association stage for low-
+            confidence objects (BYTE in ByteTrack)
+            the third association stage to recover lost tracklets with their last detection
+            (OCR in OC-SORT).
         """
         # BYTE association
         if self.use_byte and len(dets_second) > 0 and unmatched_trks.shape[0] > 0:
@@ -506,7 +516,7 @@ class HybridSORT(object):
                         dets_second[det_ind, :],
                         id_feature_second[det_ind, :],
                         update_feature=False
-                    )     # [hgx0523] do not update with id feature
+                    )     # do not update with id feature
                     to_remove_trk_indices.append(trk_ind)
                 unmatched_trks = np.setdiff1d(unmatched_trks, np.array(to_remove_trk_indices))
 
@@ -562,6 +572,8 @@ class HybridSORT(object):
             if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
                 # +1 as MOT benchmark requires positive
                 ret.append(np.concatenate((d, [trk.id + 1], [trk.conf], [trk.cls], [trk.det_ind])).reshape(1, -1))
+                # example ret:
+                # [array([[457.64,     388.7,     474.39,     414.21,     1,     0.49533,    0,     0.49533]])]
             i -= 1
             # remove dead tracklet
             if (trk.time_since_update > self.max_age):

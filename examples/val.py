@@ -134,6 +134,7 @@ class Evaluator:
             'mot_challenge' / opt.benchmark / save_dir.name / 'data'
         )
         (MOT_results_folder).mkdir(parents=True, exist_ok=True)  # make
+        # print(seq_paths, save_dir, MOT_results_folder, gt_folder, end='\n\n')
         return seq_paths, save_dir, MOT_results_folder, gt_folder
 
     def device_setup(self, opt, seq_paths):
@@ -177,7 +178,7 @@ class Evaluator:
             processes = []
 
             busy_devices = []
-
+            # print(seq_paths)
             for i, seq_path in enumerate(seq_paths):
                 # spawn one subprocess per GPU in increasing order.
                 # When max devices are reached start at 0 again
@@ -218,7 +219,6 @@ class Evaluator:
                 p.wait()
 
             LOGGER.success("Evaluation succeeded")
-
         print_args(vars(self.opt))
 
         if opt.gsi:
@@ -306,6 +306,8 @@ class Evaluator:
         if any(opt.benchmark == s for s in ['MOT16', 'MOT17', 'MOT20']):
             e.download_mot_dataset(val_tools_path, opt.benchmark)
         seq_paths, save_dir, MOT_results_folder, gt_folder = e.eval_setup(opt, val_tools_path)
+        # print(save_dir, MOT_results_folder, gt_folder, end='\n\n')
+
         free_devices = e.device_setup(opt, seq_paths)
         results = e.eval(opt, seq_paths, save_dir, MOT_results_folder, val_tools_path, gt_folder, free_devices)
         # extract main metric results: HOTA, MOTA, IDF1
@@ -324,12 +326,12 @@ def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--yolo-model', type=str, default=WEIGHTS / 'yolov8s.pt', help='model.pt path(s)')
     parser.add_argument('--reid-model', type=str, default=WEIGHTS / 'osnet_x0_25_msmt17.pt')
-    parser.add_argument('--tracking-method', type=str, default='hybridsort',
+    parser.add_argument('--tracking-method', type=str, default='deepocsort',
                         help='strongsort, ocsort')
     parser.add_argument('--name', default='USVTrack',
                         help='save results to project/name')
     parser.add_argument('--classes', nargs='+', type=str, default=['0', '1', '2'],
-                        help='filter by class: --classes 0, or --classes 0 2 3') # 需要识别的类别
+                        help='filter by class: --classes 0, or --classes 0 2 3')    # 需要识别的类别
     parser.add_argument('--project', default=ROOT / 'runs' / 'val',
                         help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true',
@@ -350,7 +352,7 @@ def parse_opt():
                         help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--save', action='store_true',
                         help='save video tracking results')
-    parser.add_argument('--processes-per-device', type=int, default=1,
+    parser.add_argument('--processes-per-device', type=int, default=4,
                         help='how many subprocesses can be invoked per GPU (to manage memory consumption)')
     opt = parser.parse_args()
     device = []
